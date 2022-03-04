@@ -17,7 +17,7 @@ import {
   PostRelationsResolver,
   UserCrudResolver,
   PostCrudResolver,
-} from "./prisma/generated/type-graphql";
+} from "../prisma/generated/type-graphql";
 
 interface Context {
   prisma: PrismaClient;
@@ -45,6 +45,8 @@ class CustomUserResolver {
     return favoritePost;
   }
 }
+
+declare const module: any;
 
 async function main() {
   const prisma = new PrismaClient();
@@ -78,7 +80,13 @@ async function main() {
   );
 
   await app.listen(4000);
-  console.log(`GraphQL is listening on 4000!`);
+
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
+
+  console.log(`GraphQL is listening on 4000! 🍻`);
 }
 
 main().catch(console.error);
